@@ -65,9 +65,9 @@ const App = () => {
       { name: "Shopee/SPay", status: "Connected", icon: "🛍️" }
     ],
     accounts: [
-      { id: 'sa', name: 'Tích Lũy An Tâm', balance: '42,000,000', change: '+2.4%', icon: Wallet, color: 'bg-blue-500' },
-      { id: 'po', name: 'Phát Triển Oracle', balance: '28,500,000', change: '+12.8%', icon: TrendingUp, color: 'bg-purple-500' },
-      { id: 'ca', name: 'Tài khoản thanh toán', balance: '14,950,000', change: '-5.2%', icon: CreditCard, color: 'bg-emerald-500' }
+      { id: 'sa', name: 'Tích Lũy An Tâm', balance: '42,000,000', change: '+2.4%', icon: Wallet, color: '#3B82F6', label: 'SA', desc: 'Savings Account' },
+      { id: 'po', name: 'Phát Triển Oracle', balance: '28,500,000', change: '+12.8%', icon: TrendingUp, color: '#A855F7', label: 'OA', desc: 'Oracle Assets' },
+      { id: 'ca', name: 'Tài khoản thanh toán', balance: '14,950,000', change: '-5.2%', icon: CreditCard, color: '#10B981', label: 'MA', desc: 'Main Account' }
     ],
     debts: [
       { id: 1, source: 'SPayLater', amount: '2,500,000', listedRate: '0%', realRate: '24.5%', feeDetails: 'Phí chuyển đổi 2% + Phí quản lý', dueDate: '15/10', riskLevel: 'Critical', color: 'text-red-500', icon: "🛍️" },
@@ -212,71 +212,79 @@ const App = () => {
 
   // --- UI COMPONENT: TỔNG QUAN CONTENT ---
   const OverviewHub = () => (
-    <div className="max-w-6xl mx-auto space-y-10 py-4">
-      {/* Overview Header */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2 bg-white rounded-[40px] p-10 shadow-sm border border-gray-100 flex flex-col md:flex-row items-center gap-12">
-          <div className="relative w-48 h-48 shrink-0">
-            <svg className="w-full h-full transform -rotate-90">
-              <circle cx="96" cy="96" r="80" fill="none" stroke="#F3F4F6" strokeWidth="20" />
-              <circle cx="96" cy="96" r="80" fill="none" stroke="#004D43" strokeWidth="20" strokeDasharray="502" strokeDashoffset={502 - (502 * data.healthScore) / 100} strokeLinecap="round" />
+    <div className="space-y-12 animate-in fade-in duration-500">
+      {/* HERO: VISUAL DONUT CHART (BEHAVIORAL ANCHOR) */}
+      <section className="bg-white rounded-[40px] p-10 shadow-sm border border-gray-100 flex flex-col items-center">
+          <div className="relative w-72 h-72 mb-10">
+            {/* SVG Donut Chart Simulation */}
+            <svg viewBox="0 0 100 100" className="w-full h-full transform -rotate-90">
+              <circle cx="50" cy="50" r="40" fill="transparent" stroke="#E5E5E5" strokeWidth="12" />
+              <circle cx="50" cy="50" r="40" fill="transparent" stroke="#00A896" strokeWidth="12" strokeDasharray="251.2" strokeDashoffset="100" /> {/* OA */}
+              <circle cx="50" cy="50" r="40" fill="transparent" stroke="#F4A261" strokeWidth="12" strokeDasharray="251.2" strokeDashoffset="180" /> {/* SA */}
+              <circle cx="50" cy="50" r="40" fill="transparent" stroke="#2A9D8F" strokeWidth="12" strokeDasharray="251.2" strokeDashoffset="220" /> {/* MA */}
+              <circle cx="50" cy="50" r="40" fill="transparent" stroke="#E76F51" strokeWidth="12" strokeDasharray="251.2" strokeDashoffset="240" /> {/* RA */}
             </svg>
-            <div className="absolute inset-0 flex flex-col items-center justify-center">
-              <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Tổng tài sản</span>
-              <span className="text-2xl font-black tracking-tighter text-gray-900 italic">{showSensitive ? `${data.totalBalance}đ` : '••••••••'}</span>
+            {/* Center Content */}
+            <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
+              <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-1">Tổng tài sản</p>
+              <p className="text-3xl font-black tracking-tighter text-gray-900 italic">{showSensitive ? `${data.totalBalance}đ` : '••••••••'}</p>
+              <p className="text-[10px] font-bold text-gray-400 uppercase mt-1 italic">VND • Q1/2024</p>
             </div>
           </div>
-          <div className="flex-1 space-y-6">
-            <div>
-              <h2 className="text-3xl font-black tracking-tighter text-gray-900 uppercase italic mb-2">Sức khỏe tài chính</h2>
-              <div className="flex items-center gap-3">
-                <div className="flex-1 h-3 bg-gray-100 rounded-full overflow-hidden">
-                  <div className="h-full bg-green-500 rounded-full" style={{ width: `${data.healthScore}%` }}></div>
-                </div>
-                <span className="font-black text-[#004D43] italic">{data.healthScore}/100</span>
-              </div>
-            </div>
-            <p className="text-gray-500 font-medium leading-relaxed">
-              Tài sản của bạn đang tăng trưởng tốt. Oracle khuyên bạn nên tối ưu hóa khoản <span className="text-[#004D43] font-black italic">Tích Lũy An Tâm</span> để nhận lãi suất kép cao hơn.
-            </p>
-          </div>
-        </div>
 
-          <div className="bg-[#1D1D1F] rounded-[40px] p-8 text-white shadow-2xl flex flex-col justify-between">
-          <div className="flex items-center justify-between mb-6">
-            <div className="p-3 bg-white/10 rounded-2xl backdrop-blur-md">
-              <Sparkles size={24} className="text-yellow-400" />
-            </div>
-            <span className="text-[10px] font-black uppercase tracking-widest text-gray-500">Oracle Insight</span>
+          {/* LEGEND / BREAKDOWN (BITE-SIZE CHUNKS) */}
+          <div className="w-full space-y-4">
+            {data.accounts.map((acc) => (
+              <div key={acc.id} className="flex items-center justify-between p-4 bg-gray-50/50 hover:bg-gray-50 rounded-2xl transition-all group cursor-pointer border border-transparent hover:border-gray-100">
+                  <div className="flex items-center gap-4">
+                    <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-black text-[10px] shadow-sm" style={{ backgroundColor: acc.color }}>
+                        {acc.label}
+                    </div>
+                    <div>
+                        <h4 className="font-black text-sm text-gray-900 tracking-tight">{acc.name}</h4>
+                        <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">{acc.desc}</p>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <p className="font-black text-base text-gray-900">{showSensitive ? `${acc.balance}đ` : '••••••••'}</p>
+                    <ChevronRight size={14} className="ml-auto text-gray-300 group-hover:text-[#004D43] transition-colors" />
+                  </div>
+              </div>
+            ))}
           </div>
-          <p className="text-lg font-bold leading-snug italic mb-6">
-            {oracleInsight}
+          <p className="mt-8 text-[10px] text-gray-400 font-bold uppercase tracking-widest text-center italic">
+            * Dữ liệu chưa bao gồm các khoản nợ đang được xử lý bởi Oracle.
           </p>
-          <button className="w-full py-4 bg-white text-black rounded-2xl font-black text-xs uppercase tracking-widest transition-all hover:bg-gray-200">
-            Tối ưu ngay
-          </button>
-        </div>
-      </div>
+      </section>
 
-      {/* Accounts Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {data.accounts.map((acc) => {
-          const Icon = acc.icon;
-          return (
-            <div key={acc.id} className="bg-white rounded-[32px] p-8 border border-gray-100 shadow-sm hover:shadow-xl hover:translate-y-[-4px] transition-all group">
-              <div className="flex justify-between items-start mb-6">
-                <div className={`w-12 h-12 ${acc.color} rounded-2xl flex items-center justify-center text-white shadow-lg`}>
-                  <Icon size={24} />
-                </div>
-                <span className="text-[10px] font-black text-green-500 bg-green-50 px-2 py-1 rounded-lg">{acc.change}</span>
+      {/* BOTTOM NUDGE: THE POSITIVE ACTION */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="bg-[#1D1D1F] rounded-[32px] p-8 text-white flex items-center justify-between group cursor-pointer shadow-xl">
+            <div>
+              <div className="flex items-center gap-2 mb-2">
+                  <div className="p-1.5 bg-yellow-400 rounded-lg text-black"><Sparkles size={16}/></div>
+                  <span className="text-[10px] font-black uppercase tracking-widest text-yellow-400">Health Score</span>
               </div>
-              <h4 className="font-black text-gray-400 text-[10px] uppercase tracking-widest mb-1">{acc.name}</h4>
-              <p className="text-2xl font-black tracking-tighter text-gray-900 italic">
-                {showSensitive ? `${acc.balance}đ` : '••••••••'}
-              </p>
+              <p className="text-4xl font-black italic">{data.healthScore}</p>
+              <p className="text-[10px] text-gray-500 font-bold uppercase mt-1 tracking-widest">Tốt hơn 85% người dùng</p>
             </div>
-          );
-        })}
+            <div className="w-16 h-16 rounded-full border-4 border-white/10 flex items-center justify-center">
+                <TrendingUp size={24} className="text-green-400" />
+            </div>
+          </div>
+
+          <div className="bg-gradient-to-br from-indigo-600 to-blue-800 rounded-[32px] p-8 text-white flex flex-col justify-between shadow-xl cursor-pointer hover:scale-[1.02] transition-all">
+            <div className="flex items-center gap-2">
+              <BrainCircuit size={20} className="text-blue-200" />
+              <span className="text-[10px] font-black uppercase tracking-widest text-blue-200">Gợi ý từ Oracle</span>
+            </div>
+            <p className="text-sm font-bold leading-relaxed mb-4">
+              {oracleInsight}
+            </p>
+            <button className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest bg-white/10 w-fit px-4 py-2 rounded-xl backdrop-blur-md">
+              Thực hiện ngay <ArrowRight size={14}/>
+            </button>
+          </div>
       </div>
     </div>
   );
@@ -796,28 +804,65 @@ const App = () => {
 
   return (
     <div className="flex min-h-screen bg-[#F5F5F7] font-sans">
-      <Sidebar />
+      {/* Sidebar */}
+      <aside className={`${sidebarOpen ? 'w-72' : 'w-20'} bg-white border-r border-gray-200 transition-all duration-300 flex flex-col sticky top-0 h-screen z-50`}>
+        <div className="p-6 flex items-center gap-4 mb-6">
+          <div className="w-10 h-10 bg-[#004D43] rounded-xl flex items-center justify-center text-white shrink-0 shadow-lg shadow-green-900/10">
+            <ShieldCheck size={24} />
+          </div>
+          {sidebarOpen && <span className="text-2xl font-black tracking-tighter text-[#004D43] uppercase italic">{APP_NAME}</span>}
+        </div>
+
+        <nav className="flex-1 px-4 space-y-1">
+          {[
+            { id: 'overview', icon: LayoutDashboard, label: 'Tổng quan' },
+            { id: 'debts', icon: ShieldCheck, label: 'Vững chãi' },
+            { id: 'invest', icon: LineChart, label: 'Phát triển' },
+            { id: 'goals', icon: Target, label: 'Ước mơ' },
+          ].map((item) => {
+            const Icon = item.icon;
+            return (
+              <button 
+                key={item.id}
+                onClick={() => setActiveTab(item.id)}
+                className={`w-full flex items-center gap-4 p-3.5 rounded-2xl transition-all ${activeTab === item.id ? 'bg-[#004D43] text-white shadow-lg' : 'text-gray-500 hover:bg-gray-50'}`}
+              >
+                <Icon size={22} strokeWidth={activeTab === item.id ? 2.5 : 2} className="shrink-0" />
+                {sidebarOpen && <span className="font-bold text-sm tracking-tight">{item.label}</span>}
+              </button>
+            );
+          })}
+        </nav>
+
+        <div className="p-4 border-t border-gray-100">
+           <button onClick={() => setIsLoggedIn(false)} className="w-full flex items-center gap-4 p-3.5 rounded-2xl text-red-500 hover:bg-red-50 transition-all font-bold text-sm uppercase tracking-tighter">
+              <LogOut size={22} />
+              {sidebarOpen && <span>Thoát</span>}
+           </button>
+        </div>
+      </aside>
+
+      {/* Main Content Area */}
       <main className="flex-1 flex flex-col min-w-0">
-        <header className="h-24 bg-white/80 backdrop-blur-xl border-b border-gray-100 px-10 flex items-center justify-between sticky top-0 z-40">
+        <header className="h-20 bg-white/80 backdrop-blur-xl border-b border-gray-200 px-8 flex items-center justify-between sticky top-0 z-40">
           <div className="flex items-center gap-4">
             <button onClick={() => setSidebarOpen(!sidebarOpen)} className="p-2 hover:bg-gray-100 rounded-xl transition-colors text-gray-400">
               <Menu size={20} />
             </button>
-            <div className="flex items-center gap-3">
-              <span className="text-[11px] font-black text-gray-400 uppercase tracking-[0.3em]">{activeTab}</span>
-              <div className="w-1.5 h-1.5 bg-green-500 rounded-full"></div>
+            <div className="flex items-center gap-4 text-gray-400 font-bold uppercase text-[10px] tracking-[0.2em]">
+               {activeTab === 'overview' ? 'Bảng điều khiển trung tâm' : activeTab}
             </div>
           </div>
-          <div className="flex items-center gap-6 text-black">
-             <div className="text-right hidden sm:block">
-               <p className="text-sm font-black text-gray-900 leading-none mb-1 uppercase tracking-tighter">{data.userName}</p>
-               <span className="text-[10px] font-black text-[#004D43] uppercase tracking-widest italic">VNeID Verified</span>
-             </div>
-             <div className="w-12 h-12 rounded-2xl bg-gray-50 flex items-center justify-center font-black text-[#004D43] text-sm border border-gray-100 shadow-sm">MT</div>
+          <div className="flex items-center gap-4">
+            <div className="text-right hidden sm:block">
+              <p className="text-sm font-black text-gray-900">{data.userName}</p>
+              <p className="text-[10px] font-bold text-green-600 uppercase tracking-widest italic">Member Platinum</p>
+            </div>
+            <div className="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center font-black text-[#004D43] text-xs">MT</div>
           </div>
         </header>
 
-        <div className="px-10 pb-20">
+        <div className="p-8 max-w-4xl mx-auto w-full space-y-12">
           <AnimatePresence mode="wait">
             <motion.div
               key={activeTab}
